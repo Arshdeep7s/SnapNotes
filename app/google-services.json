@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "110349901522",
+    "project_id": "snapnotes-e465d",
+    "storage_bucket": "snapnotes-e465d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110349901522:android:198b1ad16299616c5cd70b",
+        "android_client_info": {
+          "package_name": "week11.st6135.finalproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJP5-kmuwOfj7pXggsbKpeFJZR9VI19Ws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
