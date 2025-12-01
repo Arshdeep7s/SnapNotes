@@ -5,6 +5,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.Font
+import week11.st6135.finalproject.R
 
 // Set of Material typography styles to start with
 val Typography = Typography(
@@ -31,4 +33,19 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     )
     */
+)
+val SnapNotesFont = FontFamily(
+    Font(R.font.poppins_bold, FontWeight.Bold),
+    Font(R.font.poppins_regular, FontWeight.Normal)
+)
+
+val AppTypography = Typography(
+    headlineLarge = Typography().headlineLarge.copy(
+        fontFamily = SnapNotesFont,
+        fontWeight = FontWeight.Bold
+    ),
+    bodyLarge = Typography().bodyLarge.copy(
+        fontFamily = SnapNotesFont,
+        fontWeight = FontWeight.Normal
+    )
 )

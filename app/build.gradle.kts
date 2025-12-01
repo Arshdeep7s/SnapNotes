@@ -69,4 +69,12 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
 
     implementation("com.google.firebase:firebase-firestore-ktx:25.1.4")
+
+    implementation("com.google.mlkit:text-recognition:16.0.0")
+
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    implementation("androidx.compose.material:material-icons-core")
+    implementation("androidx.compose.material:material-icons-extended")
+
 }

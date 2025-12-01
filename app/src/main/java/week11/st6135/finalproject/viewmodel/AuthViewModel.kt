@@ -13,6 +13,8 @@ class AuthViewModel(private val repo: AuthRepository = AuthRepository()) : ViewM
     private val _state = MutableStateFlow<AuthState>(AuthState.Idle)
     val state: StateFlow<AuthState> = _state
 
+    fun currentUser() = repo.getCurrentUser()
+
     fun login(email: String, password: String) {
         viewModelScope.launch {
             if (!validateEmail(email) || password.isBlank()) {

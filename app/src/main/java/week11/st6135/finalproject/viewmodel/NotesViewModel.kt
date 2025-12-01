@@ -7,9 +7,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import week11.st6135.finalproject.model.Note
 import week11.st6135.finalproject.data.NotesRepository
-import week11.st6135.finalproject.util.AuthState
 import week11.st6135.finalproject.util.NotesUiState
-
 
 class NotesViewModel(private val repo: NotesRepository = NotesRepository()) : ViewModel() {
 
@@ -18,23 +16,8 @@ class NotesViewModel(private val repo: NotesRepository = NotesRepository()) : Vi
 
     private var notesFlowJob: Job? = null
 
-    private val _notes = MutableStateFlow<List<Note>>(emptyList())
-    val notes: StateFlow<List<Note>> = _notes
-
-    init {
-        val sampleNotes = listOf(
-            Note(id = "1", title = "Grocery List", text = "Milk, eggs, bread, fruits"),
-            Note(id = "2", title = "Project Ideas", text = "AI Notes App, WatchOS Integration"),
-            Note(id = "3", title = "Study Plan", text = "Revise Kotlin, Jetpack Compose, Firebase")
-        )
-
-        _notes.value = sampleNotes
-        _uiState.value = NotesUiState.Success(sampleNotes)
-    }
-
     /**
      * Start collecting real-time notes for the given user id.
-     * Should be called after auth and when userId is available.
      */
     fun startNotesListener(userId: String) {
         notesFlowJob?.cancel()
@@ -58,7 +41,11 @@ class NotesViewModel(private val repo: NotesRepository = NotesRepository()) : Vi
 
     fun addNote(userId: String, title: String, text: String, onComplete: (Result<String>) -> Unit = {}) {
         viewModelScope.launch {
-            val note = Note(id = "", title = title, text = text)
+            val note = Note(
+                id = "",
+                title = title,
+                text = text
+            )
             val res = repo.upsertNote(userId, note)
             onComplete(res)
         }
