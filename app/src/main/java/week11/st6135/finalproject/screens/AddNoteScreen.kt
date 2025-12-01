@@ -1,5 +1,7 @@
 package week11.st6135.finalproject.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import coil.compose.rememberAsyncImagePainter
 import com.google.mlkit.vision.common.InputImage
@@ -41,11 +44,19 @@ fun AddNoteScreen(
     var isProcessing by remember { mutableStateOf(false) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
 
+    val cameraAvailable = deviceHasCamera(context)
+
+    var snackbarMessage by remember { mutableStateOf<String?>(null) }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+
+
     val cameraImageUri = remember {
         val file = File(context.cacheDir, "temp_${System.currentTimeMillis()}.jpg")
         FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
     }
 
+    // ---------------- CAMERA BUTTON WITH ERROR HANDLING ----------------
     val cameraLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { success ->
@@ -56,6 +67,26 @@ fun AddNoteScreen(
                 extractedText = it
                 isProcessing = false
             }
+        } else {
+            snackbarMessage = "Failed to capture image."
+        }
+    }
+
+    LaunchedEffect(snackbarMessage) {
+        snackbarMessage?.let {
+            snackbarHostState.showSnackbar(it)
+            snackbarMessage = null
+        }
+    }
+
+    val cameraPermission = Manifest.permission.CAMERA
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            cameraLauncher.launch(cameraImageUri)
+        } else {
+            snackbarMessage = "Camera permission is required."
         }
     }
 
@@ -85,7 +116,8 @@ fun AddNoteScreen(
                     containerColor = Color(0xFF43173E)
                 )
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
 
         Column(
@@ -113,13 +145,23 @@ fun AddNoteScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Button(
-                    onClick = { cameraLauncher.launch(cameraImageUri) },
+                    onClick = {
+                        if (ContextCompat.checkSelfPermission(context, cameraPermission)
+                            != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            permissionLauncher.launch(cameraPermission)
+                        } else {
+                            cameraLauncher.launch(cameraImageUri)
+                        }
+                    },
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(Icons.Default.CameraAlt, null)
                     Spacer(Modifier.width(4.dp))
                     Text("Camera")
                 }
+
+
 
                 OutlinedButton(
                     onClick = { galleryLauncher.launch("image/*") },
@@ -197,4 +239,9 @@ private fun processImage(uri: Uri, context: android.content.Context, onTextExtra
     } catch (e: Exception) {
         onTextExtracted("Error loading image: ${e.message}")
     }
+}
+
+fun deviceHasCamera(context: android.content.Context): Boolean {
+    val pm = context.packageManager
+    return pm.hasSystemFeature(android.content.pm.PackageManager.FEATURE_CAMERA_ANY)
 }
