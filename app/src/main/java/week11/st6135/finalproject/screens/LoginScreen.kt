@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import week11.st6135.finalproject.util.AuthState
@@ -76,6 +77,7 @@ fun LoginScreen(
             },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFFA84E4E),
                 cursorColor = Color(0xFFA84E4E)
